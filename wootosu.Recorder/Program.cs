@@ -39,7 +39,7 @@ public class Program
       return;
     }
 
-      WootingAnalogSDK.SetKeycodeMode(KeycodeType.VirtualKey);
+    WootingAnalogSDK.SetKeycodeMode(KeycodeType.VirtualKey);
 
     (List<DeviceInfo> devices, error) = WootingAnalogSDK.GetConnectedDevicesInfo();
     if (error != WootingAnalogResult.Ok)
@@ -148,6 +148,8 @@ public class Program
 
     string recordingHash = Convert.ToHexStringLower(MD5.HashData(Encoding.Default.GetBytes(json)));
 
+    WootingAnalogSDK.UnInitialise();
+
     Clear();
     TimeSpan duration = TimeSpan.FromMilliseconds(recording.RecordingInfo.EndTime - recording.RecordingInfo.StartTime);
     AnsiConsole.MarkupLine($"[red]■ Recording stopped.[/]     [gray]Duration: {(int)duration.TotalMinutes:0#}:{duration.Seconds:0#}[/]");
@@ -158,32 +160,48 @@ public class Program
     AnsiConsole.MarkupLine($"Recording hash: [lime]{recordingHash}[/]");
     WriteLine();
 
-    string[] choices = ["View recording file", "Open recordings folder", "Perform another recording", "Exit"];
-    string choice = AnsiConsole.Prompt(
-        new SelectionPrompt<string>()
-          .Title("How would you like to proceed?")
-          .AddChoices(choices));
-
-    switch (choices.ToList().IndexOf(choice))
+    bool isFileDeleted = false;
+    while (true)
     {
-      case 0:
-        Process.Start(new ProcessStartInfo
-        {
-          FileName = filePath,
-          UseShellExecute = true
-        });
-        break;
+      List<string> allChoices = ["View recording file", "Open recordings folder", "Delete recording", "Perform another recording", "Exit"];
+      List<string> choices = [.. allChoices];
+      if (isFileDeleted)
+      {
+        choices.RemoveAt(2);
+        choices.RemoveAt(0);
+      }
 
-      case 1:
-        Process.Start("explorer.exe", $"/select,\"{filePath}\"");
-        break;
+      string choice = AnsiConsole.Prompt(
+          new SelectionPrompt<string>()
+            .Title("How would you like to proceed?")
+            .AddChoices(choices));
 
-      case 2:
-        Step1_DeviceSelection();
-        return;
+      switch (allChoices.IndexOf(choice))
+      {
+        case 0:
+          Process.Start(new ProcessStartInfo
+          {
+            FileName = filePath,
+            UseShellExecute = true
+          });
+          break;
 
-      case 3:
-        return;
+        case 1:
+          Process.Start("explorer.exe", isFileDeleted ? $"\"{new FileInfo(filePath).DirectoryName}\"" : $"/select,\"{filePath}\"");
+          break;
+
+        case 2:
+          File.Delete(filePath);
+          isFileDeleted = true;
+          break;
+
+        case 3:
+          Step1_DeviceSelection();
+          return;
+
+        case 4:
+          return;
+      }
     }
   }
 }
