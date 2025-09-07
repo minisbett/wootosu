@@ -140,7 +140,7 @@ public class Program
 
   private static void Step3_Export(Recording recording)
   {
-    string filePath = Path.Combine("recordings", $"recording-{DateTime.Now:yyyy-MM-dd_HH-mm-ss}.json");
+    string filePath = Path.Combine("recordings", $"recording-{DateTime.UtcNow:yyyy-MM-dd_HH-mm-ss}.json");
     string json = JsonConvert.SerializeObject(recording, Formatting.Indented);
 
     Directory.CreateDirectory("recordings");
