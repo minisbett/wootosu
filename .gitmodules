@@ -1,0 +1,3 @@
+[submodule "wootosu.Emulator"]
+	path = wootosu.Emulator
+	url = https://github.com/minisbett/wootosu.Emulator
