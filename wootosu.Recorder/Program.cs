@@ -13,9 +13,12 @@ using Recorder = wootosu.Recorder.Recorder;
 
 public class Program
 {
+  public static readonly string VERSION = "1.0.0";
+
   public static void Main(string[] args)
   {
     CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
+    Title = $"wootosu.Recorder v{VERSION}";
 
     Step1_DeviceSelection();
   }
