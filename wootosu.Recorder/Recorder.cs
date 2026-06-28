@@ -36,7 +36,7 @@ internal class Recorder(DeviceInfo deviceInfo)
     }
 
     Dictionary<short, float> buffer = rawBuffer.ToDictionary(x => x.Item1, x => x.Item2);
-    float timestamp = _watch.ElapsedTicks * 1f / Stopwatch.Frequency * 1000;
+    double timestamp = _watch.Elapsed.TotalMilliseconds;
 
     foreach (KeyValuePair<short, float> keyState in buffer)
       if (!_lastBuffer.TryGetValue(keyState.Key, out float analogValue) || keyState.Value != analogValue)

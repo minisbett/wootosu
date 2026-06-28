@@ -6,7 +6,7 @@ public class RecordFrame
 {
   public RecordFrame() { }
 
-  public RecordFrame(long scanIndex, float timestamp, VirtualKey keyCode, float analogValue)
+  public RecordFrame(long scanIndex, double timestamp, VirtualKey keyCode, float analogValue)
   {
     ScanIndex = scanIndex;
     Timestamp = timestamp;
@@ -18,7 +18,7 @@ public class RecordFrame
   public long ScanIndex { get; private set; }
 
   [JsonProperty("timestamp")]
-  public float Timestamp { get; private set; }
+  public double Timestamp { get; private set; }
 
   [JsonProperty("key_code")]
   public VirtualKey KeyCode { get; private set; }
